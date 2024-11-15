@@ -1,0 +1,73 @@
+"""
+projekt.py: druhý projekt do Engeto Online Python Akademie
+
+author: Martin Beles
+email: martinbeles1996@gmail.com
+discord: martin_71829 
+"""
+
+import random
+print("Hi there!")
+print("-----------------------------------------------")
+print("I've generated a random 4 digit number for you.")
+print("Let's play a bulls and cows game.")
+print("-----------------------------------------------")
+
+def generuj_random_číslo(): 
+    čislice = list("0123456789")
+    random_číslo = random.choice(čislice)
+    čislice.remove(random_číslo[0])
+    random_číslo += ''.join(random.sample(čislice + ["0"], 3))
+    return random_číslo
+
+def over_tip(tip):
+    if len(tip) != 4 or not tip.isdigit():
+        return "Your number must have exactly 4 digits."
+    if tip[0] == '0':
+        return "Your number cannot start with 0."
+    if len(set(tip)) != 4:
+        return "The digits of your number must be unique."
+    return None
+
+def analyzuj_tip(random_číslo, tip):
+    bulls = sum(1 for r, t in zip(random_číslo, tip) if r == t)
+    cows = sum(1 for t in tip if t in random_číslo) - bulls
+    return bulls, cows
+
+def vysledek_tipu(bulls, cows):
+    vysledek_bull = "bull" if bulls == 1 else "bulls"
+    vysledek_cow = "cow" if cows == 1 else "cows"
+    return f"{bulls} {vysledek_bull}, {cows} {vysledek_cow}"
+
+random_číslo = generuj_random_číslo()
+
+def tipovačka():
+    pokusy = 0
+    while True:
+        print("Enter a number:")
+        print("-----------------------------------------------")
+        tip = input(">>> ").strip()
+        nespravny_tip = over_tip(tip)
+        if nespravny_tip:
+            print(nespravny_tip)
+            continue
+        pokusy += 1
+        
+        bulls, cows = analyzuj_tip(random_číslo, tip)
+        
+        if bulls == 4:
+            print(f"Correct, you've guessed the right number in {pokusy} guesses!")
+            break
+        else:
+            print(vysledek_tipu(bulls, cows))
+            print("-----------------------------------------------")
+    
+    if pokusy <= 3:
+        skóre = "amazing"
+    elif pokusy <= 10:
+        skóre = "average"
+    else:
+        skóre = "not so good"
+    print(f"That's {skóre}!")
+
+tipovačka()
